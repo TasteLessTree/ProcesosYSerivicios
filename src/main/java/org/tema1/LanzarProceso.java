@@ -8,13 +8,11 @@ public class LanzarProceso {
     public static void main(String[] args) {
         LanzarProceso proceso = new LanzarProceso();
 
-        /*
         String ruta = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
         proceso. ejecutar(ruta);
         System.out.println("Proceso finalizado");
-        */
 
-        proceso.ejecutarSuma(1, 51);
+        proceso.ejecutarSuma(1, 2);
         System.out.println("OK");
     }
 

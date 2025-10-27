@@ -2,6 +2,11 @@ package org.tema1;
 
 public class Contador {
     public static void main(String[] args) {
+        if (args.length == 0) {
+            System.out.println("Sin argumentos");
+            System.exit(0);
+        }
+
         Contador contador = new Contador();
 
         int x = Integer.parseInt(args[0]);
