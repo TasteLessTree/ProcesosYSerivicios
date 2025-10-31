@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 public class Ejercicio4 {
     public static void main(String[] args) {
         ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.command("dir");
+        processBuilder.command("cmd.exe", "dir", "archivo_no_existe.txt");
 
         try {
             Process process = processBuilder.start();
