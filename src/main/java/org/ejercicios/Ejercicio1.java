@@ -13,7 +13,7 @@ public class Ejercicio1 {
 
     public static void main(String[] args) {
         ProcessBuilder processBuilder = new ProcessBuilder();
-        processBuilder.command("cmd.exe", "/c", "type con & echo 'Texto de error de prueba'1>&2'");
+        processBuilder.command("cmd.exe", "/c", "more & echo 'Texto de error de prueba'1>&2'");
 
         try {
             Process process = processBuilder.start();
