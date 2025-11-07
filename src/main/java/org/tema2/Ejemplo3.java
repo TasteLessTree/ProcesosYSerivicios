@@ -3,7 +3,6 @@ package org.tema2;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 public class Ejemplo3 extends Thread {
     String command;
