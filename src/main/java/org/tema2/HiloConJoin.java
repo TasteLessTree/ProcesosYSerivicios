@@ -1,14 +1,21 @@
 package org.tema2;
 
+// Ejemplo5.java
 public class HiloConJoin extends Thread {
     public HiloConJoin(String name) {
         super(name);
     }
 
     public void run() {
-        for (int i = 0; i <= 5; i++) {
-            System.out.println("Hilo: " + this.getName() + " - i = " + i);
+        System.out.println("Iniciado: " + getName());
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            System.out.println("Hilo de sleep interrumpido: " + e.getMessage());
         }
+
+        System.out.println("Terminado: " + getName());
     }
 
     public static void main(String[] args) {
@@ -22,14 +29,14 @@ public class HiloConJoin extends Thread {
 
         try {
             System.out.println("El hilo principal espera a que hilo1 termine");
-            hilo.join();
+            hilo.join(); // Main se bloquea hasta que 'hilo' termine
 
             System.out.println("El hilo principal espera a que hilo2 termine");
-            hilo2.join();
+            hilo2.join(); // Main se bloquea hasta que 'hilo2' termine
         } catch (InterruptedException e) {
             System.out.println("Error con el join de los hilos: " + e.getMessage());
         }
 
-        System.out.println("Hilo principal finalizado");
+        System.out.println("Hilo principal finalizado (hilo e hilo2 también)");
     }
 }

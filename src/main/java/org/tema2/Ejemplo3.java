@@ -14,7 +14,7 @@ public class Ejemplo3 extends Thread {
     @Override
     public void run() {
         ProcessBuilder pb = new ProcessBuilder();
-        pb.command(command.split(","));
+        pb.command(command.split(" "));
 
         try {
             System.out.println("Iniciando proceso...");
@@ -30,7 +30,7 @@ public class Ejemplo3 extends Thread {
             }
 
             int exitCode = process.waitFor();
-            System.out.println("Proceso: " + command + "finalizado con: " + exitCode);
+            System.out.println("Proceso: " + command + " finalizado con: " + exitCode);
         } catch (IOException e) {
             System.out.println("Error al iniciar proceso: " + e.getMessage());
         } catch (InterruptedException e) {
