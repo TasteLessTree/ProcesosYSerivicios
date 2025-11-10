@@ -12,19 +12,19 @@ public class Piscina {
         String nombreVecino = Thread.currentThread().getName();
 
         try {
-            System.out.println(nombreVecino + ": Llega a la puerta de la piscina\n");
+            System.out.println("\033[1;32m" + nombreVecino + ": Llega a la puerta de la piscina\033[0m\n");
 
             torniquete.acquire();
 
-            System.out.println(nombreVecino + ", ¡Al agua! (Quedan: " + torniquete.availablePermits() + " sitios libres)\n");
+            System.out.println(nombreVecino + ", ¡Al agua! (Quedan: " + torniquete.availablePermits() + " sitios libres)\033[0m\n");
             Thread.sleep(3000);
 
-            System.out.println(nombreVecino + " ya ha tenido bastastante.\n");
+            System.out.println("\033[1;33m" + nombreVecino + " ya ha tenido bastastante.\033[0m\n");
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             System.out.println("Error con los semáforos: " + e.getMessage());
         } finally {
-            System.out.println(nombreVecino + " ha abandonado la piscina. (" + (torniquete.availablePermits() + 1) + " sitios libres)\n");
+            System.out.println("\033[1;31m" + nombreVecino + " ha abandonado la piscina. (" + (torniquete.availablePermits() + 1) + " sitios libres)\033[0m\n");
             torniquete.release();
         }
     }

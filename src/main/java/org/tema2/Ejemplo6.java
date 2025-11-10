@@ -11,7 +11,7 @@ public class Ejemplo6 {
             Vecino vecino = new Vecino("Vecino-" + i, piscina);
             vecino.start();
 
-            // Pequeña pausa para mejorar la simulació
+            // Pequeña pausa para mejorar la simulación
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {

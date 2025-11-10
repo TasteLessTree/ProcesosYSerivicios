@@ -1,4 +1,4 @@
-package org.ejercicios;
+package org.ejercicios.tema1;
 
 import java.io.BufferedReader;
 import java.io.IOException;
