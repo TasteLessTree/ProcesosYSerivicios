@@ -1,7 +1,8 @@
-package org.ejercicios.tema2;
+package org.tema2;
 
 import java.util.concurrent.Semaphore;
 
+// Ejemplo 7
 public class PoolConexionesDB {
     private static final int CONEXION_MAX = 3;
 

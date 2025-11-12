@@ -1,5 +1,6 @@
 package org.tema2;
 
+// Ejemplo1
 public class MiHilo extends Thread {
     @Override
     public void run() {

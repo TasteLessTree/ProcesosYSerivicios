@@ -1,5 +1,6 @@
-package org.ejercicios.tema2;
+package org.tema2;
 
+// Ejemplo7
 public class UsuarioDB extends Thread {
     private final PoolConexionesDB conexiones;
 

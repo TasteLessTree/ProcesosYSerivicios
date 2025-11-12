@@ -1,5 +1,6 @@
 package org.tema2;
 
+// Ejemplo 6
 public class Vecino extends Thread {
     private final Piscina piscina;
 

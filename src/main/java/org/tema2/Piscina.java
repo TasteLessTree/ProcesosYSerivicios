@@ -2,6 +2,7 @@ package org.tema2;
 
 import java.util.concurrent.Semaphore;
 
+// Ejemplo 6
 public class Piscina {
     private static final int AFORO_MAX = 3;
 

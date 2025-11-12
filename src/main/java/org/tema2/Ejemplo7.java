@@ -1,6 +1,6 @@
-package org.ejercicios.tema2;
+package org.tema2;
 
-public class Aplicacion {
+public class Ejemplo7 {
     public static void main(String[] args) {
         PoolConexionesDB conexiones = new PoolConexionesDB();
         int numUsuarios = 8;
