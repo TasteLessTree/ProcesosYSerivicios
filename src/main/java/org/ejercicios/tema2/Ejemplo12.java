@@ -11,43 +11,35 @@ public class Ejemplo12 {
     public static void main(String[] args) {
         Horno horno = new Horno();
 
-        String[] nombres = {"A", "B"};
+        Panadero pA = new Panadero("Panadero-A", horno);
+        Panadero pB = new Panadero("Panadero-B", horno);
 
-        for (String nombre : nombres) {
-            Panadero panadero = new Panadero("Panadero-" + nombre, horno);
-            panadero.start();
-        }
+        pA.start();
+        pB.start();
     }
 
     // Horno
     static class Horno {
         private final int CAPACIDAD = 1;
 
-        private final Semaphore acceso =  new Semaphore(CAPACIDAD);
+        private final Semaphore horno =  new Semaphore(CAPACIDAD, true);
 
-        // Número de pastales que han horneado
-        private int numPasteles = 0;
-
-        private void usarHorno(int pastelesTotales) {
+        private void usarHorno() {
             String panadero = Thread.currentThread().getName();
 
-            for (int i = 0; i < pastelesTotales; i++) {
-                try {
-                    System.out.println("🥣 " + panadero + " 🧑‍🍳 está PREPARANDO la masa. (3 seg)");
-                    Thread.sleep(3000);
+            try {
+                System.out.println("🥣 " + panadero + " 🧑‍🍳 está PREPARANDO la masa. (3 seg)");
+                Thread.sleep(3000);
 
-                    System.out.println("⌛ " + panadero + " 🧑‍🍳 está ESPERANDO el horno.");
-                    acceso.acquire();
+                horno.acquire();
+                System.out.println("⌛ " + panadero + " 🧑‍🍳 está ESPERANDO el horno.");
 
-                    System.out.println("🔥 " + panadero + " 🧑‍🍳 está HORNEANDO... (7 seg)");
-                    Thread.sleep(7000);
-                } catch (InterruptedException e) {
-                    System.out.println("Error en el acceso al horno: " + e.getMessage());
-                } finally {
-                    numPasteles++;
-                    acceso.release();
-                    System.out.println("🍞 " + panadero + " 🧑‍🍳 ha TERMINADO de hornear el pastél número " + numPasteles);
-                }
+                System.out.println("🔥 " + panadero + " 🧑‍🍳 está HORNEANDO... (7 seg)");
+                Thread.sleep(7000);
+            } catch (InterruptedException e) {
+                System.out.println("Error en el horno al horno: " + e.getMessage());
+            } finally {
+                horno.release();
             }
         }
     }
@@ -64,7 +56,14 @@ public class Ejemplo12 {
         @Override
         public void run() {
             int pastelesTotales = 4;
-            horno.usarHorno(pastelesTotales);
+            int numPasteles = 0;
+            String panadero = Thread.currentThread().getName();
+
+            for (int i = 0; i < pastelesTotales; i++) {
+                horno.usarHorno();
+                numPasteles++;
+                System.out.println("🍞 " + panadero + " 🧑‍🍳 ha TERMINADO de hornear el pastel número " + numPasteles);
+            }
         }
     }
 }
