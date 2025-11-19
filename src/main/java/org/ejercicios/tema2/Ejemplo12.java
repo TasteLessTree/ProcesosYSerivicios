@@ -5,6 +5,7 @@ import java.util.concurrent.Semaphore;
 /** @author AndrésPérezM
  * Ejemplo 12
  * */
+
 public class Ejemplo12 {
     // Main
     public static void main(String[] args) {
@@ -12,8 +13,8 @@ public class Ejemplo12 {
 
         String[] nombres = {"A", "B"};
 
-        for (int i = 0; i < nombres.length; i++) {
-            Panadero panadero = new Panadero("Panadero-" + nombres[i], horno);
+        for (String nombre : nombres) {
+            Panadero panadero = new Panadero("Panadero-" + nombre, horno);
             panadero.start();
         }
     }
@@ -27,24 +28,26 @@ public class Ejemplo12 {
         // Número de pastales que han horneado
         private int numPasteles = 0;
 
-        private void usarHorno() {
+        private void usarHorno(int pastelesTotales) {
             String panadero = Thread.currentThread().getName();
 
-            try {
-                System.out.println("🥣 " + panadero + " 🧑‍🍳 está PREPARANDO la masa. (3 seg)");
-                Thread.sleep(3000);
+            for (int i = 0; i < pastelesTotales; i++) {
+                try {
+                    System.out.println("🥣 " + panadero + " 🧑‍🍳 está PREPARANDO la masa. (3 seg)");
+                    Thread.sleep(3000);
 
-                System.out.println("⌛ " + panadero + " 🧑‍🍳 está ESPERANDO el horno.");
-                acceso.acquire();
+                    System.out.println("⌛ " + panadero + " 🧑‍🍳 está ESPERANDO el horno.");
+                    acceso.acquire();
 
-                System.out.println("🔥 " + panadero + " 🧑‍🍳 está HORNEANDO... (7 seg)");
-                Thread.sleep(7000);
-            } catch (InterruptedException e) {
-                System.out.println("Error en el acceso al horno: " + e.getMessage());
-            } finally {
-                numPasteles++;
-                acceso.release();
-                System.out.println("🍞 " + panadero + " 🧑‍🍳 ha TERMINADO de hornear el pastél número " + numPasteles);
+                    System.out.println("🔥 " + panadero + " 🧑‍🍳 está HORNEANDO... (7 seg)");
+                    Thread.sleep(7000);
+                } catch (InterruptedException e) {
+                    System.out.println("Error en el acceso al horno: " + e.getMessage());
+                } finally {
+                    numPasteles++;
+                    acceso.release();
+                    System.out.println("🍞 " + panadero + " 🧑‍🍳 ha TERMINADO de hornear el pastél número " + numPasteles);
+                }
             }
         }
     }
@@ -60,7 +63,8 @@ public class Ejemplo12 {
 
         @Override
         public void run() {
-            horno.usarHorno();
+            int pastelesTotales = 4;
+            horno.usarHorno(pastelesTotales);
         }
     }
 }
