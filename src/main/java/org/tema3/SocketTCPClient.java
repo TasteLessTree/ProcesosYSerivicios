@@ -34,7 +34,7 @@ public class SocketTCPClient {
             System.out.println("Cerrando conexiones...");
             // Cerramos la conexión
             socket.close();
-            System.out.println("Coneción cerrada con éxito");
+            System.out.println("Conexión cerrada con éxito");
         } catch (IOException e) {
             System.out.println("Error en el servidor: " + e.getMessage());
         }
