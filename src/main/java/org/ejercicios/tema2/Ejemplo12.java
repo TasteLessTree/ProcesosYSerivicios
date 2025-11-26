@@ -22,7 +22,7 @@ public class Ejemplo12 {
     static class Horno {
         private final int CAPACIDAD = 1;
 
-        private final Semaphore horno =  new Semaphore(CAPACIDAD, true);
+        private final Semaphore horno = new Semaphore(CAPACIDAD, true);
 
         private void usarHorno() {
             String panadero = Thread.currentThread().getName();
