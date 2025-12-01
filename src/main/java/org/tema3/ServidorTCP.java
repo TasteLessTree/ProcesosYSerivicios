@@ -1,71 +1,84 @@
 package org.tema3;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Scanner;
 
 public class ServidorTCP {
-    private static String host = "localhost";
-    private static int puerto = 67;
+    private ServerSocket serverSocket;
+    private Socket socketCliente;
+    private BufferedReader entradaTexto;
+    private PrintWriter salidaTexto;
+    private int puerto;
 
-    public ServidorTCP(String host, int puerto) {
-        ServidorTCP.host = host;
-        ServidorTCP.puerto = puerto;
+    // Constructor
+    public ServidorTCP(int puerto) {
+        this.puerto = puerto;
     }
 
-    public ServidorTCP() {
-        ServidorTCP.host = "localhost";
-        ServidorTCP.puerto = 67;
+    public void start() {
+        try {
+            // 1. (Servidor) Esperando conexiones...
+            System.out.println("(Servidor) Esperando conexiones...");
+            serverSocket = new ServerSocket(puerto);
+            // Aceptamos la conexión (bloqueante)
+            socketCliente = serverSocket.accept();
+            // 2. (Servidor) Conexión establecida.
+            System.out.println("(Servidor) Conexión establecida.");
+            // 3. (Servidor) Abriendo canales de texto...
+            abrirCanalesDeTexto();
+            System.out.println("(Servidor) Canales de texto abiertos.");
+            // 4. Leer mensaje del cliente
+            System.out.println("(Servidor) Leyendo mensaje...");
+            String mensajeRecibido = leerMensajeTexto();
+            // 5. Mostrar mensaje recibido
+            System.out.println("(Servidor) Mensaje recibido:" + mensajeRecibido);
+            System.out.println("(Servidor) Mensaje leido.");
+            // 6. Enviar respuesta
+            System.out.println("(Servidor) Enviando mensaje...");
+            enviarMensajeTexto("Mensaje enviado desde el servidor");
+            System.out.println("(Servidor) Mensaje enviado.");
+            // 7. Cerrar canales
+            System.out.println("(Servidor) Cerrando canales de texto.");
+            cerrarCanalesDeTexto();
+            System.out.println("(Servidor) Canales de texto cerrados.");
+            // 8. Cerrar conexión
+            System.out.println("(Servidor) Cerrando conexiones...");
+            stop();
+            System.out.println("(Servidor) Conexiones cerradas.");
+        } catch (IOException e) {
+            System.out.println("(Servidor) Error: " + e.getMessage());
+        }
+    }
+
+    public void stop() throws IOException {
+        if (socketCliente != null) socketCliente.close();
+        if (serverSocket != null) serverSocket.close();
+    }
+
+    public void abrirCanalesDeTexto() throws IOException {
+        entradaTexto = new BufferedReader(new InputStreamReader(socketCliente.getInputStream()));
+        salidaTexto = new PrintWriter(socketCliente.getOutputStream(), true);
+    }
+
+    public void cerrarCanalesDeTexto() throws IOException {
+        if (entradaTexto != null) entradaTexto.close();
+        if (salidaTexto != null) salidaTexto.close();
+    }
+
+    public String leerMensajeTexto() throws IOException {
+        return entradaTexto.readLine();
+    }
+
+    public void enviarMensajeTexto(String mensaje) {
+        salidaTexto.println(mensaje);
     }
 
     public static void main(String[] args) {
-        start();
-    }
-
-    public static void start() {
-        try (ServerSocket serverSocket = new ServerSocket()) {
-            System.out.println("Esperando conexiones...");
-            InetSocketAddress address = new InetSocketAddress(InetAddress.getByName(host), puerto);
-            serverSocket.bind(address);
-
-            Socket socket = serverSocket.accept();
-
-            enviarMensajeTexto(socket);
-            leerMensajeTexto(socket);
-            cerrarCanalDeTexto(socket);
-        } catch (IOException e) {
-            System.out.println("Error en el servidor: " + e.getMessage());
-        }
-    }
-
-    // Cerrar el canal
-    private static void cerrarCanalDeTexto(Socket socket) throws IOException {
-        socket.close();
-    }
-
-    // Enviar mensaje de texto
-    private static void enviarMensajeTexto(Socket socket) throws IOException {
-        try (Scanner scanner = new Scanner(System.in); DataOutputStream dataOut = new DataOutputStream(socket.getOutputStream())) {
-            System.out.print(">> ");
-            dataOut.writeUTF(scanner.nextLine());
-            dataOut.flush();
-        } catch (IOException ioe) {
-            System.out.println("Error al enviar el mensaje de texto: " + ioe.getMessage());
-        }
-    }
-
-    // Leer el mensaje
-    private static void leerMensajeTexto(Socket socket) throws IOException {
-        try (DataInputStream dataIn = new DataInputStream(socket.getInputStream())) {
-            String mensaje = dataIn.readUTF();
-            System.out.println("\u001B[33m Cliente" + mensaje + "\u001B[37m");
-        } catch (IOException ioe) {
-            System.out.println("Error al leer mensaje de texto: " + ioe.getMessage());
-        }
+        ServidorTCP servidor = new ServidorTCP(49171);
+        servidor.start();
     }
 }
