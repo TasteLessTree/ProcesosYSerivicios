@@ -1,4 +1,4 @@
-package org.ejercicios.tema3;
+package org.tema3;
 
 import java.io.*;
 import java.net.ServerSocket;

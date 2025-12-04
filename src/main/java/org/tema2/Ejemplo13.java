@@ -4,8 +4,8 @@ import java.util.concurrent.Semaphore;
 
 public class Ejemplo13 {
     private static Semaphore salaEspera = new Semaphore(4, true);
-    private static Semaphore clienteListo = new Semaphore(0);
-    private static Semaphore barberoListo = new Semaphore(0);
+    private static Semaphore cliente = new Semaphore(0);
+    private static Semaphore barbero = new Semaphore(0);
 
     public static void main(String[] args) {
         System.out.println("Barbería abierta");
@@ -37,8 +37,8 @@ public class Ejemplo13 {
             try {
                 if (salaEspera.tryAcquire()) {
                     System.out.println("El cliente " + id + " ha entrado en la sala de espera. Sitios libres: " + salaEspera.availablePermits());
-                    clienteListo.release();
-                    barberoListo.acquire();
+                    cliente.release();
+                    barbero.acquire();
                     salaEspera.release();
 
                     System.out.println("El cliente " + id + " se ha sentado en la silla del barbero y le cortan el pelo.");
@@ -56,15 +56,15 @@ public class Ejemplo13 {
         public void run() {
             while (true) {
                 try {
-                    if (!clienteListo.tryAcquire()) {
+                    if (!cliente.tryAcquire()) {
                         System.out.println("El barbero está durmiendo");
-                        clienteListo.acquire();
+                        cliente.acquire();
                     }
 
                     System.out.println("El barbero está despierto");
-                    barberoListo.release();
+                    barbero.release();
 
-                    System.out.println("El barbero está cortando el pelo (5 se.g)");
+                    System.out.println("El barbero está cortando el pelo (5 seg.)");
                     Thread.sleep(5000);
 
                     System.out.println("El barbero ha terminado el corte");
