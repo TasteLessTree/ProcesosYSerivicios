@@ -1,19 +1,22 @@
 package org.ejercicios.tema3;
 
-import java.net.ServerSocket;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.Socket;
 
 /** @author AndrésPérezM
  * */
 
 public class GestorProceso extends Thread {
     private static int numeroHilo = 0; // Solo se incializa una vez
-    private ServerSocket servidor;
+
+    private Socket cliente;
     private int espera;
 
-    public GestorProceso(ServerSocket servidor) {
+    public GestorProceso(Socket cliente) {
         super("Thread-" + numeroHilo);
         this.espera = esperarSegundos();
-        this.servidor = servidor;
+        this.cliente = cliente;
         numeroHilo++;
     }
 
@@ -23,9 +26,19 @@ public class GestorProceso extends Thread {
         try {
             System.out.println("HILO (" + hilo + "): Atendiendo al cliente. Tiempo de proceso: " + espera + "s");
             Thread.sleep(espera * 1000L); // Por mil para pasar a milisegundos
+
+            // Enviar la salida al cliente
+            PrintWriter salida = new PrintWriter(cliente.getOutputStream(), true);
+            salida.println(String.valueOf(espera));
             System.out.println("HILO (" + hilo + "): Finalizado. Respuesta enviada (" + espera + ").");
+
+            // Cerrar el cliente y la salida
+            salida.close();
+            cliente.close();
         } catch (InterruptedException e) {
             System.err.println("Error en el gestor del proceso: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("Error al enviar la salida al cliente: " + e.getMessage());
         }
     }
 
@@ -33,9 +46,5 @@ public class GestorProceso extends Thread {
     private int esperarSegundos() {
         int rango = (15 - 5) + 1;
         return (int) (Math.random() * rango) + 5;
-    }
-
-    public String enviarMensaje() {
-        return String.valueOf(espera);
     }
 }
