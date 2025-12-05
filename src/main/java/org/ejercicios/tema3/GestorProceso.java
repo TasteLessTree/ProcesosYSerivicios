@@ -1,15 +1,19 @@
 package org.ejercicios.tema3;
 
+import java.net.ServerSocket;
+
 /** @author AndrésPérezM
  * */
 
 public class GestorProceso extends Thread {
     private static int numeroHilo = 0; // Solo se incializa una vez
+    private ServerSocket servidor;
     private int espera;
 
-    public GestorProceso() {
+    public GestorProceso(ServerSocket servidor) {
         super("Thread-" + numeroHilo);
         this.espera = esperarSegundos();
+        this.servidor = servidor;
         numeroHilo++;
     }
 
@@ -31,7 +35,7 @@ public class GestorProceso extends Thread {
         return (int) (Math.random() * rango) + 5;
     }
 
-    public int getEspera() {
-        return espera;
+    public String enviarMensaje() {
+        return String.valueOf(espera);
     }
 }

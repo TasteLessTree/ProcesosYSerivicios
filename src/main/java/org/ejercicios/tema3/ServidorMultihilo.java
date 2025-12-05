@@ -7,11 +7,16 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.Semaphore;
 
 /** @author AndrésPérezM
  * */
 
 public class ServidorMultihilo {
+    private static final int CAPACIDAD = 1;
+
+    private final Semaphore semaforo = new Semaphore(CAPACIDAD, true);
+
     private ServerSocket servidor;
     private Socket cliente;
     private BufferedReader entrada;
@@ -41,9 +46,9 @@ public class ServidorMultihilo {
             System.out.println("SERVIDOR: Cliente conectado desde /" + direccion);
 
             // Enviar respuesta al cliente
-            GestorProceso gestorProceso = new GestorProceso();
+            GestorProceso gestorProceso = new GestorProceso(servidor);
+            String mensaje = gestorProceso.enviarMensaje();
             gestorProceso.start();
-            String mensaje = String.valueOf(gestorProceso.getEspera());
             enviarMensaje(mensaje);
 
             // Cerrar canales de texto
@@ -53,6 +58,8 @@ public class ServidorMultihilo {
             parar();
         } catch (IOException e) {
             System.err.println("SERVIDOR: error en el servidor: " + e.getMessage());
+        } finally {
+            semaforo.release();
         }
     }
 
