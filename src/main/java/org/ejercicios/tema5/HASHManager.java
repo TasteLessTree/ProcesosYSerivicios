@@ -22,14 +22,4 @@ public class HASHManager {
             return null;
         }
     }
-
-    // Devoler el digest
-    public MessageDigest getMessageDigest() {
-        try {
-            return MessageDigest.getInstance(ALGORITMO);
-        } catch (NoSuchAlgorithmException e) {
-            System.err.println("Error al obtener el digest: " + e.getMessage());
-            return null;
-        }
-    }
 }
