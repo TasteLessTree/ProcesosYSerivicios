@@ -1,5 +1,7 @@
 package org.temario.tema5.ejemplo5;
 
+import org.temario.tema5.ejemplo4.CrearClavesCifrado;
+
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
@@ -10,19 +12,20 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Base64;
 
-/** @author AndrésPérezM
- * */
-
-public class ClienteMultihilo {
+public class ClienteEncriptador {
     private Socket cliente;
     private BufferedReader entrada;
     private PrintWriter salida;
     private String host;
     private int puerto;
+    private SecretKey llave;
+    private byte[] iv;
 
-    public ClienteMultihilo(String host, int puerto) {
+    public ClienteEncriptador(String host, int puerto, CrearClavesCifrado creador) {
         this.host = host;
         this.puerto = puerto;
+        this.llave = creador.getSecretKey();
+        this.iv = creador.getIv();
     }
 
     public void iniciar() {
@@ -36,6 +39,9 @@ public class ClienteMultihilo {
             // Abrimos los canales de texto
             abrirCanales();
 
+            // Enviar mensaje al servidor
+            escribirMensaje("Hola, cómo un mensaje cifrado.");
+
             // Leemos la salida
             String mensaje = leerMensaje();
             System.out.println("CLIENTE: El servidor ha terminado la tarea en " + mensaje + " segundos.");
@@ -45,6 +51,8 @@ public class ClienteMultihilo {
             parar();
         } catch (IOException e) {
             System.err.println("CLIENTE: Error en el cliente: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("CLIENTE: Error al encriptar el mensaje: " + e.getMessage());
         }
     }
 
@@ -53,7 +61,11 @@ public class ClienteMultihilo {
         salida = new PrintWriter(cliente.getOutputStream(), true);
     }
 
-    public String leerMensaje() throws IOException {
+    private void escribirMensaje(String mensaje) throws Exception {
+        salida.println(cifrarTexto(mensaje, llave, iv));
+    }
+
+    private String leerMensaje() throws IOException {
         return entrada.readLine();
     }
 
@@ -66,13 +78,8 @@ public class ClienteMultihilo {
         if (cliente != null) cliente.close();
     }
 
-    public static void main(String[] args) {
-        ClienteMultihilo clienteMultihilo = new ClienteMultihilo("localhost", 49171); // localhost -> 127.0.0.1
-        clienteMultihilo.iniciar();
-    }
-
-    // Cifrar mensaje secreto
-    public String cifrarTexto(String texto, SecretKey secretKey, byte[] iv) throws Exception {
+    // Cifrar texto
+    private String cifrarTexto(String texto, SecretKey secretKey, byte[] iv) throws Exception {
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         IvParameterSpec ivParameterSpec = new IvParameterSpec(iv);
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivParameterSpec);
