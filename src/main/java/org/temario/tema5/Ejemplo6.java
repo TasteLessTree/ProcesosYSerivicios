@@ -6,6 +6,23 @@ import java.security.*;
 import java.util.Base64;
 
 public class Ejemplo6 {
+    private static final String MENSAJE = "Hola mundo";
+
+    public static void main(String[] args) {
+        try {
+            KeyPair parLegitimo = generarKeyPair();
+            PublicKey publicKey = parLegitimo.getPublic();
+            PrivateKey privateKey = parLegitimo.getPrivate();
+
+            System.out.println(cifrar(MENSAJE, publicKey));
+            System.out.println(desencriptar(MENSAJE, privateKey));
+            System.out.println(firmar(MENSAJE, privateKey));
+            System.out.println(verificarFirma(MENSAJE, publicKey));
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+    }
+
     // Generar un par de claves RSA de 2048 bytes
     public static KeyPair generarKeyPair() throws Exception {
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
